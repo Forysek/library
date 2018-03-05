@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -31,5 +32,6 @@ public class Readers {
     @Column(name = "creation_date")
     private Date creationDate;
 
+    private List<BooksCopies> booksCopies;
 
 }
