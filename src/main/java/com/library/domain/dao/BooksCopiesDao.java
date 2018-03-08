@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public interface BooksDopiesDao extends CrudRepository<BooksCopies, Long> {
+public interface BooksCopiesDao extends CrudRepository<BooksCopies, Long> {
 
     @Override
     List<BooksCopies> findAll();

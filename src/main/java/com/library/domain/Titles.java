@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,15 +26,19 @@ public class Titles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
     @Column(name = "id")
     private long id;
 
+    @NotNull
     @Column(name = "title")
     private String title;
 
+    @NotNull
     @Column(name = "author")
     private String author;
 
+    @NotNull
     @Column(name = "publication_date")
     private String publicationDate;
 
