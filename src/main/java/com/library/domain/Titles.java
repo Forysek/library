@@ -42,15 +42,11 @@ public class Titles {
     @Column(name = "publication_date")
     private String publicationDate;
 
-    private List<BooksCopies> booksCopies = new ArrayList<>();
-
     @OneToMany(
             targetEntity = BooksCopies.class,
             mappedBy = "booksCopies",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    public List<BooksCopies> getBooksCopies() {
-        return booksCopies;
-    }
+    private List<BooksCopies> booksCopies = new ArrayList<>();
 }

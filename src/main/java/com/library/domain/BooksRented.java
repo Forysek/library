@@ -27,7 +27,12 @@ public class BooksRented {
     @Column(name = "id")
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "reader_id")
     private Readers readers;
+
+    @ManyToOne
+    @JoinColumn(name = "book_copy_id")
     private BooksCopies booksCopies;
 
     @NotNull
@@ -37,16 +42,4 @@ public class BooksRented {
     @NotNull
     @Column(name = "return date")
     private Date returnDate;
-
-    @ManyToOne
-    @JoinColumn(name = "reader_id")
-    public Readers getReaders() {
-        return readers;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "book_copy_id")
-    public BooksCopies getBooksCopies() {
-        return booksCopies;
-    }
 }

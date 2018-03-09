@@ -13,8 +13,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class BooksRentedDto {
     private long id;
-    private Date rentDate;
-    private Date returnDate;
     private Readers readers;
     private BooksCopies booksCopies;
+    private Date rentDate;
+    private Date returnDate;
 }

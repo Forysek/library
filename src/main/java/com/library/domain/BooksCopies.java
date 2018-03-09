@@ -36,14 +36,9 @@ public class BooksCopies {
     @Column(name = "status")
     private String status;
 
-    private Titles titles;
-    private List<BooksRented> booksRented = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "title_id")
-    public Titles getTitles() {
-        return titles;
-    }
+    private Titles titles;
 
     @OneToMany(
             targetEntity = BooksRented.class,
@@ -51,7 +46,5 @@ public class BooksCopies {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    public List<BooksRented> getBooksRented() {
-        return booksRented;
-    }
+    private List<BooksRented> booksRented = new ArrayList<>();
 }

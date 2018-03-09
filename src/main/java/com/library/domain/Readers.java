@@ -43,15 +43,11 @@ public class Readers {
     @Column(name = "creation_date")
     private Date creationDate;
 
-    private List<BooksRented> booksRented = new ArrayList<>();
-
     @OneToMany(
             targetEntity = BooksRented.class,
             mappedBy = "booksRented",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    public List<BooksRented> getBooksRented() {
-        return booksRented;
-    }
+    private List<BooksRented> booksRented = new ArrayList<>();
 }
