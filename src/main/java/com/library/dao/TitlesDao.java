@@ -1,4 +1,4 @@
-package com.library.domain.dao;
+package com.library.dao;
 
 import com.library.domain.Titles;
 import org.springframework.data.repository.CrudRepository;
