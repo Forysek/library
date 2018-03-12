@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table
 @Entity(name = "titles")
 public class Titles {
 
@@ -44,7 +46,7 @@ public class Titles {
 
     @OneToMany(
             targetEntity = BooksCopies.class,
-            mappedBy = "booksCopies",
+            mappedBy = "titles",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
