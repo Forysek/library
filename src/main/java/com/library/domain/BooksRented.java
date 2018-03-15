@@ -32,12 +32,12 @@ public class BooksRented {
 
     @ManyToOne
     @NotNull
-    @JoinColumn(name = "reader_id")
+    @JoinColumn(name = "reader_id", referencedColumnName = "id")
     private Readers readers;
 
     @ManyToOne
     @NotNull
-    @JoinColumn(name = "book_copy_id")
+    @JoinColumn(name = "book_copy_id", referencedColumnName = "id")
     private BooksCopies booksCopies;
 
     @NotNull
