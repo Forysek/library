@@ -44,7 +44,6 @@ public class BooksRented {
     @Column(name = "rent_date")
     private LocalDateTime rentDate;
 
-    @NotNull
     @Column(name = "return date")
     private LocalDateTime returnDate;
 }

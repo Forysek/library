@@ -1,6 +1,6 @@
-package com.library.dao;
+package com.library.repository;
 
-import com.library.domain.BooksRented;
+import com.library.domain.Readers;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,19 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-
 @Transactional
 @Repository
-public interface BooksRentedDao extends CrudRepository<BooksRented, Long>{
+public interface ReadersRepository extends CrudRepository<Readers, Long> {
 
     @Override
-    List<BooksRented> findAll();
+    List<Readers> findAll();
 
     @Override
-    Optional<BooksRented> findById(Long id);
+    Optional<Readers> findById(Long id);
 
     @Override
-    BooksRented save(BooksRented booksRented);
+    Readers save(Readers readers);
 
     @Override
     void deleteById(Long id);
