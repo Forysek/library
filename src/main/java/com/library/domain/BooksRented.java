@@ -1,20 +1,27 @@
 package com.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,25 +32,34 @@ import java.time.LocalDateTime;
 public class BooksRented {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @ManyToOne
     @NotNull
-    @JoinColumn(name = "reader_id", referencedColumnName = "id")
-    private Readers readers;
+    @OneToMany(
+            targetEntity = Readers.class,
+            mappedBy = "booksRented",
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.LAZY
+    )
+    @JsonManagedReference
+    private List<Readers> readers = new ArrayList<>();
 
-    @ManyToOne
     @NotNull
-    @JoinColumn(name = "book_copy_id", referencedColumnName = "id")
-    private BooksCopies booksCopies;
+    @OneToMany(
+            targetEntity = BooksCopies.class,
+            mappedBy = "booksRented",
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.LAZY
+    )
+    @JsonManagedReference
+    private List<BooksCopies> booksCopies = new ArrayList<>();
 
     @NotNull
     @Column(name = "rent_date")
-    private LocalDateTime rentDate;
+    private LocalDate rentDate;
 
-    @Column(name = "return date")
-    private LocalDateTime returnDate;
+    @Column(name = "return_date")
+    private LocalDate returnDate;
 }

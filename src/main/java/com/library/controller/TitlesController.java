@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.library.controller.exceptions.CopyNotFoundException;
 import com.library.domain.dto.TitlesDto;
 import com.library.mapper.TitlesMapper;
 import com.library.service.ServiceTitles;
@@ -27,7 +28,7 @@ public class TitlesController {
     @Autowired
     private TitlesMapper titlesMapper;
 
-    @PostMapping(value = "newBook", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "newTitle", consumes = APPLICATION_JSON_VALUE)
     public void createTitle(@RequestBody TitlesDto titlesDto) {
         service.saveTitle(titlesMapper.mapToTitles(titlesDto));
     }
@@ -35,6 +36,11 @@ public class TitlesController {
     @GetMapping(value = "getTitles")
     public List<TitlesDto> getAllTitles() {
         return titlesMapper.mapToTitlesDtoList(service.getAllTitles());
+    }
+
+    @GetMapping(value = "getSingleTitle")
+    public TitlesDto getTitle(@RequestParam Long id) throws CopyNotFoundException{
+        return titlesMapper.mapToTitlesDto(service.getTitleById(id).orElseThrow(CopyNotFoundException::new));
     }
 
     @DeleteMapping(value = "deleteTitle")

@@ -28,12 +28,12 @@ public class BooksCopiesController {
     @Autowired
     private BooksCopiesMapper booksCopiesMapper;
 
-    @PostMapping(value = "bookCopy", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "newBookCopy", consumes = APPLICATION_JSON_VALUE)
     public void createTitle(@RequestBody BooksCopiesDto booksCopiesDto) {
         service.saveBooksCopies(booksCopiesMapper.mapToBooksCopies(booksCopiesDto));
     }
 
-    @PutMapping(value = "statusChange", consumes = APPLICATION_JSON_VALUE)
+    @PutMapping(value = "statusChange")
     public void updateStatus(@RequestParam Long id, @RequestParam String newStatus) throws CopyNotFoundException {
         BooksCopiesDto booksCopiesDto = booksCopiesMapper.mapToDto(service.getBookCopyById(id).orElseThrow(CopyNotFoundException::new));
         booksCopiesDto.setStatus(newStatus);
@@ -45,6 +45,6 @@ public class BooksCopiesController {
         return booksCopiesMapper.mapToBooksCopiesDtoList(service.getBooksCopiesList());
     }
 
-    @GetMapping(value = "availableCount")
-    public int availableBooksCount(
+//    @GetMapping(value = "availableCount")
+//    public int availableBooksCount(
 }

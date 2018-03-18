@@ -5,17 +5,19 @@ import com.library.domain.Readers;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
 @NoArgsConstructor
 public class BooksRentedDto {
-    private long id;
-    private Readers readers;
-    private BooksCopies booksCopies;
-    private LocalDateTime rentDate;
-    private LocalDateTime returnDate;
+    private Long id;
+    private List<Readers> readers;
+    private List<BooksCopies> booksCopies;
+    private LocalDate rentDate;
+    private LocalDate returnDate;
 }

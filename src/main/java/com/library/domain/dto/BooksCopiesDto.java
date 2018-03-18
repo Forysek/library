@@ -7,15 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
 public class BooksCopiesDto {
-    private long id;
+    private Long id;
     private String status;
-    private Titles titlesId;
-    private List<BooksRented> booksRented;
+    private Titles titles;
+    private BooksRented booksRented;
 }

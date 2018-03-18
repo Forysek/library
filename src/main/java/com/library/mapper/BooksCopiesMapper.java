@@ -13,7 +13,7 @@ public class BooksCopiesMapper {
         return new BooksCopies(
                 booksCopiesDto.getId(),
                 booksCopiesDto.getStatus(),
-                booksCopiesDto.getTitlesId(),
+                booksCopiesDto.getTitles(),
                 booksCopiesDto.getBooksRented());
     }
 

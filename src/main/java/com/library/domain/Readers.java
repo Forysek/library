@@ -1,23 +1,24 @@
 package com.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -28,10 +29,9 @@ import java.util.List;
 public class Readers {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @NotNull
     @Column(name = "first_name")
@@ -43,13 +43,10 @@ public class Readers {
 
     @NotNull
     @Column(name = "creation_date")
-    private Date creationDate;
+    private LocalDate creationDate;
 
-    @OneToMany(
-            targetEntity = BooksRented.class,
-            mappedBy = "readers",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private List<BooksRented> booksRented = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "renting_id")
+    @JsonBackReference
+    private BooksRented booksRented;
 }

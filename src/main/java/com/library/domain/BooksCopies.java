@@ -1,24 +1,23 @@
 package com.library.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -29,8 +28,7 @@ import java.util.List;
 public class BooksCopies {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -42,11 +40,9 @@ public class BooksCopies {
     @JoinColumn(name = "title_id")
     private Titles titles;
 
-    @OneToMany(
-            targetEntity = BooksRented.class,
-            mappedBy = "booksCopies",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private List<BooksRented> booksRented = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "rental_id")
+    @JsonBackReference
+    private BooksRented booksRented;
 }
+
