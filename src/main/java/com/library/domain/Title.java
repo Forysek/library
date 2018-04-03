@@ -25,41 +25,38 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table
-@Entity(name = "books_rented")
-public class BooksRented {
+@Entity(name = "TITLES")
+public class Title {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
     @NotNull
+    @Column(name = "TITLE")
+    private String title;
+
+    @NotNull
+    @Column(name = "AUTHOR")
+    private String author;
+
+    @NotNull
+    @Column(name = "PUBLICATION_DATE")
+    private LocalDate publicationDate;
+
     @OneToMany(
-            targetEntity = Readers.class,
-            mappedBy = "booksRented",
+            targetEntity = BookCopy.class,
+            mappedBy = "title",
             cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY
     )
-    @JsonManagedReference
-    private List<Readers> readers = new ArrayList<>();
-
-    @NotNull
-    @OneToMany(
-            targetEntity = BooksCopies.class,
-            mappedBy = "booksRented",
-            cascade = CascadeType.MERGE,
-            fetch = FetchType.LAZY
-    )
-    @JsonManagedReference
-    private List<BooksCopies> booksCopies = new ArrayList<>();
-
-    @NotNull
-    @Column(name = "rent_date")
-    private LocalDate rentDate;
-
-    @Column(name = "return_date")
-    private LocalDate returnDate;
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @JsonManagedReference(value = "bookCopyTitle")
+    private List<BookCopy> booksCopies = new ArrayList<>();
 }

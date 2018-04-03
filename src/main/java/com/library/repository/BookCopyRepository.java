@@ -1,7 +1,7 @@
 package com.library.repository;
 
-import com.library.domain.BooksCopies;
-import com.library.domain.Titles;
+import com.library.domain.BookCopy;
+import com.library.domain.Title;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,20 +12,17 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public interface BooksCopiesRepository extends CrudRepository<BooksCopies, Long> {
+public interface BookCopyRepository extends CrudRepository<BookCopy, Long> {
 
     @Override
-    List<BooksCopies> findAll();
+    List<BookCopy> findAll();
 
     @Override
-    Optional<BooksCopies> findById(Long id);
+    Optional<BookCopy> findById(Long id);
 
     @Override
-    BooksCopies save(BooksCopies booksCopies);
+    BookCopy save(BookCopy bookCopy);
 
     @Override
     void deleteById(Long id);
-
-    Optional<BooksCopies> findByTitles(Titles titles);
-
 }

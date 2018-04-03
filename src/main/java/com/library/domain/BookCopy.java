@@ -2,7 +2,6 @@ package com.library.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,25 +23,31 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
-@Entity(name = "books_copies")
-public class BooksCopies {
+@Entity(name = "BOOKS_COPIES")
+public class BookCopy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @NotNull
-    @Column(name = "status")
+    @Column(name = "STATUS")
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "title_id")
-    private Titles titles;
+    @JoinColumn(name = "TITLE_ID")
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @JsonBackReference(value = "bookCopyTitle")
+    private Title title;
 
     @ManyToOne
-    @JoinColumn(name = "rental_id")
-    @JsonBackReference
-    private BooksRented booksRented;
+    @JoinColumn(name = "READER_ID")
+    @JsonIdentityInfo(
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @JsonBackReference(value = "bookCopyReader")
+    private Reader reader;
 }
 

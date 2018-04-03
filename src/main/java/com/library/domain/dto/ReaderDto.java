@@ -1,6 +1,6 @@
 package com.library.domain.dto;
 
-import com.library.domain.BooksCopies;
+import com.library.domain.BookCopy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +13,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TitlesDto {
+public class ReaderDto {
     private Long id;
-    private String title;
-    private String author;
-    private LocalDate publicationDate;
-    private List<BooksCopies> booksCopies;
+    private String firstName;
+    private String lastName;
+    private LocalDate creationDate;
+    private List<BookCopy> booksCopies;
 }

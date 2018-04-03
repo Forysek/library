@@ -1,7 +1,7 @@
 package com.library.domain.dto;
 
-import com.library.domain.BooksRented;
-import com.library.domain.Titles;
+import com.library.domain.Reader;
+import com.library.domain.Title;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BooksCopiesDto {
+public class BookCopyDto {
     private Long id;
     private String status;
-    private Titles titles;
-    private BooksRented booksRented;
+    private Title title;
+    private Reader reader;
 }

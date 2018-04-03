@@ -1,6 +1,6 @@
 package com.library.repository;
 
-import com.library.domain.BooksRented;
+import com.library.domain.Title;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,20 +8,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-
 @Transactional
 @Repository
-public interface BooksRentedRepository extends CrudRepository<BooksRented, Long>{
+public interface TitleRepository extends CrudRepository<Title, Long>{
 
     @Override
-    List<BooksRented> findAll();
+    List<Title> findAll();
 
     @Override
-    Optional<BooksRented> findById(Long id);
+    Optional<Title> findById(Long id);
 
     @Override
-    BooksRented save(BooksRented booksRented);
+    Title save(Title title);
 
     @Override
     void deleteById(Long id);
+
+    Optional<Title> findByTitle(String title);
 }
