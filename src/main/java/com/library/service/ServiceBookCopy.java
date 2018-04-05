@@ -14,7 +14,6 @@ public class ServiceBookCopy {
     private BookCopyRepository bookCopyRepository;
 
     public BookCopy saveBookCopy(final BookCopy bookCopy) {
-        bookCopy.setStatus("Available");
         return bookCopyRepository.save(bookCopy);
     }
 
@@ -27,7 +26,10 @@ public class ServiceBookCopy {
     }
 
     public BookCopy rentBookCopy(final BookCopy bookCopy) {
-        bookCopy.setStatus("Not Available");
+        return bookCopyRepository.save(bookCopy);
+    }
+
+    public BookCopy returnBookCopy(final BookCopy bookCopy) {
         return bookCopyRepository.save(bookCopy);
     }
 }

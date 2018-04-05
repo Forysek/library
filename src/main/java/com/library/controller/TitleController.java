@@ -51,7 +51,7 @@ public class TitleController {
 
     @GetMapping(value = "availableByTitle")
     public Integer getAvailableByTitle(@RequestParam String title) throws TitleNameNotFoundException {
-        return service.getCopiesListByTitle(title);
+        return service.getCopiesListByTitleAmount(title);
     }
 
 }

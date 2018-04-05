@@ -3,6 +3,8 @@ package com.library.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,17 +38,11 @@ public class BookCopy {
 
     @ManyToOne
     @JoinColumn(name = "TITLE_ID")
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
     @JsonBackReference(value = "bookCopyTitle")
     private Title title;
 
     @ManyToOne
     @JoinColumn(name = "READER_ID")
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
     @JsonBackReference(value = "bookCopyReader")
     private Reader reader;
 }

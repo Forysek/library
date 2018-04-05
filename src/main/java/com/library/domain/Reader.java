@@ -53,9 +53,6 @@ public class Reader {
             cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY
     )
-    @JsonIdentityInfo(
-            generator = ObjectIdGenerators.PropertyGenerator.class,
-            property = "id")
     @JsonManagedReference(value = "bookCopyReader")
     private List<BookCopy> booksCopies = new ArrayList<>();
 
