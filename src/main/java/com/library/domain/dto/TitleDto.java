@@ -1,5 +1,6 @@
 package com.library.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.library.domain.BookCopy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,6 @@ public class TitleDto {
     private Long id;
     private String title;
     private String author;
-    private LocalDate publicationDate;
+    private String publicationDate;
     private List<BookCopy> booksCopies;
 }

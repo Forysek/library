@@ -48,7 +48,7 @@ public class Title {
 
     @NotNull
     @Column(name = "PUBLICATION_DATE")
-    private LocalDate publicationDate;
+    private String publicationDate;
 
     @OneToMany(
             targetEntity = BookCopy.class,

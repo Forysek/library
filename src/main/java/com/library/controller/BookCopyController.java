@@ -46,12 +46,12 @@ public class BookCopyController {
     }
 
     @PutMapping(value = "rentBook")
-    public void rentBook(@RequestBody BookCopyDto bookCopyDto) {
-        service.rentBookCopy(bookCopyMapper.mapToBookCopy(bookCopyDto));
+    public BookCopyDto rentBook(@RequestBody BookCopyDto bookCopyDto) {
+        return bookCopyMapper.mapToDto(service.rentBookCopy(bookCopyMapper.mapToBookCopy(bookCopyDto)));
     }
 
     @PutMapping(value = "returnBook")
-    public void returnBook(@RequestBody BookCopyDto bookCopyDto) {
-        service.returnBookCopy(bookCopyMapper.mapToBookCopy(bookCopyDto));
+    public BookCopyDto returnBook(@RequestBody BookCopyDto bookCopyDto) {
+        return bookCopyMapper.mapToDto(service.returnBookCopy(bookCopyMapper.mapToBookCopy(bookCopyDto)));
     }
 }

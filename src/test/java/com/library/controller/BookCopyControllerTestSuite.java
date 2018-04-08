@@ -139,7 +139,7 @@ public class BookCopyControllerTestSuite {
                 2L,
                 "Antonio",
                 "Banderas",
-                LocalDate.of(2018, 4, 1),
+                "01/01/2018",
                 bookCopies
         );
         BookCopy bookCopy = new BookCopy(
@@ -164,7 +164,7 @@ public class BookCopyControllerTestSuite {
                 .andExpect(jsonPath("$.reader.id", is(2)))
                 .andExpect(jsonPath("$.reader.firstName", is("Antonio")))
                 .andExpect(jsonPath("$.reader.lastName", is("Banderas")))
-                .andExpect(jsonPath("$.reader.creationDate", is("2018-04-01")))
+                .andExpect(jsonPath("$.reader.creationDate", is("01/01/2018")))
                 .andExpect(jsonPath("$.reader.booksCopies", hasSize(1)))
                 .andExpect(jsonPath("$.reader.booksCopies[0].id", is(1)));
     }
@@ -178,14 +178,20 @@ public class BookCopyControllerTestSuite {
                 null,
                 null
         );
-        when(mapper.mapToBookCopy(any(BookCopyDto.class))).thenReturn(bookCopy);
+        BookCopyDto bookCopyDto = new BookCopyDto(
+                1L,
+                "Available",
+                null,
+                null
+        );
+        when(mapper.mapToBookCopy(bookCopyDto)).thenReturn(bookCopy);
         Gson gson = new Gson();
-        String jsonContent = gson.toJson(bookCopy);
+        String jsonContent = gson.toJson(bookCopyDto);
 
         mockMvc.perform(put("/v1/library/books/returnBook")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonContent)
-                .characterEncoding("UTF-8"))
+                .characterEncoding("UTF-8")
+                .content(jsonContent))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.status", is("Available")))

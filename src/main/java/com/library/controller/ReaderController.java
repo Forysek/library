@@ -41,5 +41,4 @@ public class ReaderController {
     public void deleteUser(@RequestParam Long id){
         service.deleteReaderById(id);
     }
-
 }

@@ -45,7 +45,7 @@ public class Reader {
 
     @NotNull
     @Column(name = "CREATION_DATE")
-    private LocalDate creationDate;
+    private String creationDate;
 
     @OneToMany(
             targetEntity = BookCopy.class,
