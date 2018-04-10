@@ -7,7 +7,9 @@ import com.library.mapper.TitleMapper;
 import com.library.service.ServiceTitle;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.any;
@@ -25,7 +28,11 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,8 +50,8 @@ public class TitleControllerTestSuite {
     @MockBean
     private ServiceTitle service;
 
-    @MockBean
-    private TitleMapper mapper;
+    @Captor
+    private ArgumentCaptor<Title> titleArgumentCaptor;
 
     @Test
     public void shouldCreateNewTitle() throws Exception {
@@ -60,21 +67,28 @@ public class TitleControllerTestSuite {
         String jsonContent = gson.toJson(titleDto);
 
         //When & Then
-        mockMvc.perform(post("/v1/library/titles/newTitle")
+        mockMvc.perform(post("/v1/library/titles")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(jsonContent))
                 .andExpect(status().isOk());
+
+        verify(service, times(1)).saveTitle(titleArgumentCaptor.capture());
+        Title capturedValue = titleArgumentCaptor.getValue();
+        assertThat(capturedValue.getTitle(), is("Test Title"));
+        assertThat(capturedValue.getAuthor(), is("Test Author"));
+        assertThat(capturedValue.getPublicationDate(), is("01/01/2018"));
+        assertThat(capturedValue.getBooksCopies(), is(nullValue()));
     }
 
     @Test
     public void shouldGetAllTitlesEmptyList() throws Exception {
         //Given
-        List<TitleDto> emptyList = new ArrayList<>();
-        when(mapper.mapToTitlesDtoList(service.getAllTitles())).thenReturn(emptyList);
+        List<Title> emptyList = new ArrayList<>();
+        when(service.getAllTitles()).thenReturn(emptyList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/titles/titles")
+        mockMvc.perform(get("/v1/library/titles/allTitles")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -83,17 +97,18 @@ public class TitleControllerTestSuite {
     @Test
     public void shouldGetAllTitlesList() throws Exception{
         //Given
-        List<TitleDto> titleDtoList = new ArrayList<>();
-        titleDtoList.add(new TitleDto(
+        List<Title> titleList = new ArrayList<>();
+        titleList.add(new Title(
                 1L,
                 "Test Title",
                 "Test Author",
-                "01/01/2018",                null
+                "01/01/2018",
+                null
         ));
-        when(mapper.mapToTitlesDtoList(service.getAllTitles())).thenReturn(titleDtoList);
+        when(service.getAllTitles()).thenReturn(titleList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/titles/titles")
+        mockMvc.perform(get("/v1/library/titles/allTitles")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -101,19 +116,13 @@ public class TitleControllerTestSuite {
                 .andExpect(jsonPath("$[0].title", is("Test Title")))
                 .andExpect(jsonPath("$[0].author", is("Test Author")))
                 .andExpect(jsonPath("$[0].publicationDate", is("01/01/2018")))
-                .andExpect(jsonPath("$[0].booksCopies", isEmptyOrNullString()));
+                .andExpect(jsonPath("$[0].booksCopies", is(nullValue())));
     }
 
     @Test
     public void shouldGetSingleTitle() throws Exception {
         //Given
-        TitleDto titleDto = new TitleDto(
-                1L,
-                "Test Title",
-                "Test Author",
-                "01/01/2018",
-                null
-        );
+        Long id = 1L;
         Title title = new Title(
                 1L,
                 "Test Title",
@@ -121,19 +130,18 @@ public class TitleControllerTestSuite {
                 "01/01/2018",
                 null
         );
-        when(service.getTitleById(anyLong())).thenReturn(ofNullable(title));
-        when(mapper.mapToTitleDto(ArgumentMatchers.any(Title.class))).thenReturn(titleDto);
+        when(service.getTitleById(id)).thenReturn(Optional.of(title));
 
         //When & Then
         mockMvc.perform(get("/v1/library/titles/singleTitle?id=1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("id", "1"))
+                .param("id", id.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("Test Title")))
                 .andExpect(jsonPath("$.author", is("Test Author")))
                 .andExpect(jsonPath("$.publicationDate", is("01/01/2018")))
-                .andExpect(jsonPath("$.booksCopies", isEmptyOrNullString()));
+                .andExpect(jsonPath("$.booksCopies", is(nullValue())));
     }
 
     @Test
@@ -152,5 +160,4 @@ public class TitleControllerTestSuite {
                 .param("title", "Test"))
                 .andExpect(jsonPath("$", isA(Integer.class)));
     }
-
 }

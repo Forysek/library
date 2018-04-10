@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ReaderMapper {
-    public Reader mapToReader(final ReaderDto readerDto) {
+    public static Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
                 readerDto.getId(),
                 readerDto.getFirstName(),
@@ -18,7 +18,7 @@ public class ReaderMapper {
                 readerDto.getBooksCopies());
     }
 
-    public ReaderDto mapToReaderDto(final Reader reader) {
+    public static ReaderDto mapToReaderDto(final Reader reader) {
         return new ReaderDto(
                 reader.getId(),
                 reader.getFirstName(),
@@ -27,7 +27,7 @@ public class ReaderMapper {
                 reader.getBooksCopies());
     }
 
-    public List<ReaderDto> mapToReadersDtoList(final List<Reader> readersList) {
+    public static List<ReaderDto> mapToReadersDtoList(final List<Reader> readersList) {
         return readersList.stream()
                 .map(m -> new ReaderDto(m.getId(), m.getFirstName(), m.getLastName(), m.getCreationDate(), m.getBooksCopies()))
                 .collect(Collectors.toList());

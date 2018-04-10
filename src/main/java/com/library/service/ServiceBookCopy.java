@@ -17,19 +17,11 @@ public class ServiceBookCopy {
         return bookCopyRepository.save(bookCopy);
     }
 
-    public Optional<BookCopy> getBookCopyById(final Long id){
-        return bookCopyRepository.findById(id);
-    }
-
     public List<BookCopy> getBooksCopiesList() {
         return bookCopyRepository.findAll();
     }
 
-    public BookCopy rentBookCopy(final BookCopy bookCopy) {
-        return bookCopyRepository.save(bookCopy);
-    }
-
-    public BookCopy returnBookCopy(final BookCopy bookCopy) {
+    public BookCopy moveBookCopy(final BookCopy bookCopy) {
         return bookCopyRepository.save(bookCopy);
     }
 }

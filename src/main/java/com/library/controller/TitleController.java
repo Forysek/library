@@ -2,6 +2,7 @@ package com.library.controller;
 
 import com.library.controller.exceptions.TitleIdNotFoundException;
 import com.library.controller.exceptions.TitleNameNotFoundException;
+import com.library.domain.Title;
 import com.library.domain.dto.TitleDto;
 import com.library.mapper.TitleMapper;
 import com.library.service.ServiceTitle;
@@ -21,37 +22,41 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/v1/library/titles/")
+@RequestMapping("/v1/library/titles")
 public class TitleController {
     @Autowired
     private ServiceTitle service;
 
-    @Autowired
-    private TitleMapper titleMapper;
-
-    @PostMapping(value = "newTitle", consumes = APPLICATION_JSON_VALUE)
-    public void createTitle(@RequestBody TitleDto titleDto) {
-        service.saveTitle(titleMapper.mapToTitle(titleDto));
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    public TitleDto createTitle(@RequestBody TitleDto titleDto) {
+        Title title = TitleMapper.mapToTitle(titleDto);
+        service.saveTitle(title);
+        TitleDto tempTitleDto = TitleMapper.mapToTitleDto(title);
+        return tempTitleDto;
     }
 
-    @GetMapping(value = "titles")
+    @GetMapping(value = "allTitles")
     public List<TitleDto> getAllTitles() {
-        return titleMapper.mapToTitlesDtoList(service.getAllTitles());
+        List<Title> titles = service.getAllTitles();
+        List<TitleDto> titleDtos = TitleMapper.mapToTitlesDtoList(titles);
+        return titleDtos;
     }
 
     @GetMapping(value = "singleTitle")
     public TitleDto getTitle(@RequestParam Long id) throws TitleIdNotFoundException {
-        return titleMapper.mapToTitleDto(service.getTitleById(id).orElseThrow(TitleIdNotFoundException::new));
+        Title title = service.getTitleById(id).orElseThrow(TitleIdNotFoundException::new);
+        TitleDto titleDto = TitleMapper.mapToTitleDto(title);
+        return titleDto;
     }
 
-    @DeleteMapping(value = "deleteTitle")
+    @DeleteMapping(value="deleteTitle")
     public void deleteTitle(@RequestParam Long titleId){
         service.deleteTitle(titleId);
     }
 
     @GetMapping(value = "availableByTitle")
     public Integer getAvailableByTitle(@RequestParam String title) throws TitleNameNotFoundException {
-        return service.getCopiesListByTitleAmount(title);
+        Integer availableAmount = service.getCopiesListByTitleAmount(title);
+        return availableAmount;
     }
-
 }

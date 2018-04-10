@@ -1,11 +1,13 @@
 package com.library.controller;
 
 import com.google.gson.Gson;
+import com.library.domain.Reader;
 import com.library.domain.dto.ReaderDto;
-import com.library.mapper.ReaderMapper;
 import com.library.service.ServiceReader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,13 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,9 +41,8 @@ public class ReaderControllerTestSuite {
     @MockBean
     private ServiceReader service;
 
-    @MockBean
-    private ReaderMapper mapper;
-
+    @Captor
+    private ArgumentCaptor<Reader> readerArgumentCaptor;
 
     @Test
     public void shouldCreateUser() throws Exception {
@@ -55,21 +58,31 @@ public class ReaderControllerTestSuite {
         String jsonContent = gson.toJson(readerDto);
 
         //When && Then
-        mockMvc.perform(post("/v1/library/readers/newUser")
+        mockMvc.perform(post("/v1/library/readers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(jsonContent))
                 .andExpect(status().isOk());
+
+        verify(service, times(1)).saveReader(readerArgumentCaptor.capture());
+        Reader capturedValue = readerArgumentCaptor.getValue();
+        assertThat(capturedValue.getId(), is(1L));
+        assertThat(capturedValue.getFirstName(), is("Antonio"));
+        assertThat(capturedValue.getLastName(), is("Banderas"));
+        assertThat(capturedValue.getCreationDate(), is("01/01/2018"));
+        assertThat(capturedValue.getBooksCopies(), is(nullValue()));
+
+
     }
 
     @Test
     public void shouldGetAllUsersEmptyList() throws Exception{
         //Given
-        List<ReaderDto> emptyList = new ArrayList<>();
-        when(mapper.mapToReadersDtoList(service.getAllReaders())).thenReturn(emptyList);
+        List<Reader> emptyList = new ArrayList<>();
+        when(service.getAllReaders()).thenReturn(emptyList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/readers/users")
+        mockMvc.perform(get("/v1/library/readers")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -78,18 +91,18 @@ public class ReaderControllerTestSuite {
     @Test
     public void shouldGetAllUsersList() throws Exception{
         //Given
-        List<ReaderDto> readersDtoList = new ArrayList<>();
-        readersDtoList.add(new ReaderDto(
+        List<Reader> readersList = new ArrayList<>();
+        readersList.add(new Reader(
                 1L,
                 "Antonio",
                 "Banderas",
                 "01/01/2018",
                 null
         ));
-        when(mapper.mapToReadersDtoList(service.getAllReaders())).thenReturn(readersDtoList);
+        when(service.getAllReaders()).thenReturn(readersList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/readers/users")
+        mockMvc.perform(get("/v1/library/readers")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -97,12 +110,12 @@ public class ReaderControllerTestSuite {
                 .andExpect(jsonPath("$[0].firstName", is("Antonio")))
                 .andExpect(jsonPath("$[0].lastName", is("Banderas")))
                 .andExpect(jsonPath("$[0].creationDate", is("01/01/2018")))
-                .andExpect(jsonPath("$[0].booksCopies", isEmptyOrNullString()));
+                .andExpect(jsonPath("$[0].booksCopies", is(nullValue())));
     }
 
     @Test
     public void shouldDeleteUser() throws Exception {
-        mockMvc.perform(delete("/v1/library/readers/deleteUser")
+        mockMvc.perform(delete("/v1/library/readers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("id", "1"))
                 .andExpect(status().isOk());

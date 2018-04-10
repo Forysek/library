@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.library.domain.Reader;
 import com.library.domain.dto.ReaderDto;
 import com.library.mapper.ReaderMapper;
 import com.library.service.ServiceReader;
@@ -19,25 +20,27 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/v1/library/readers/")
+@RequestMapping("/v1/library/readers")
 public class ReaderController {
     @Autowired
     private ServiceReader service;
 
-    @Autowired
-    private ReaderMapper readerMapper;
-
-    @PostMapping(value = "newUser", consumes = APPLICATION_JSON_VALUE)
-    public void createUser(@RequestBody ReaderDto readerDto) {
-        service.saveReader(readerMapper.mapToReader(readerDto));
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    public ReaderDto createUser(@RequestBody ReaderDto readerDto) {
+        Reader reader = ReaderMapper.mapToReader(readerDto);
+        service.saveReader(reader);
+        ReaderDto tempReaderDto = ReaderMapper.mapToReaderDto(reader);
+        return tempReaderDto;
     }
 
-    @GetMapping(value = "users")
+    @GetMapping
     public List<ReaderDto> getAllUsers(){
-        return readerMapper.mapToReadersDtoList(service.getAllReaders());
+        List<Reader> readerList = service.getAllReaders();
+        List<ReaderDto> readerDtoList = ReaderMapper.mapToReadersDtoList(readerList);
+        return readerDtoList;
     }
 
-    @DeleteMapping(value = "deleteUser")
+    @DeleteMapping
     public void deleteUser(@RequestParam Long id){
         service.deleteReaderById(id);
     }

@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class BookCopyMapper {
-    public BookCopy mapToBookCopy(final BookCopyDto bookCopyDto) {
+    public static BookCopy mapToBookCopy(final BookCopyDto bookCopyDto) {
         return new BookCopy(
                 bookCopyDto.getId(),
                 bookCopyDto.getStatus(),
@@ -17,7 +16,7 @@ public class BookCopyMapper {
                 bookCopyDto.getReader());
     }
 
-    public BookCopyDto mapToDto(final BookCopy bookCopy) {
+    public static BookCopyDto mapToDto(final BookCopy bookCopy) {
         return new BookCopyDto(
                 bookCopy.getId(),
                 bookCopy.getStatus(),
@@ -25,7 +24,7 @@ public class BookCopyMapper {
                 bookCopy.getReader());
     }
 
-    public List<BookCopyDto> mapToBooksCopiesDtoList(final List<BookCopy> booksCopiesList) {
+    public static List<BookCopyDto> mapToBooksCopiesDtoList(final List<BookCopy> booksCopiesList) {
         return booksCopiesList.stream()
                 .map(m -> new BookCopyDto(m.getId(), m.getStatus(), m.getTitle(), m.getReader()))
                 .collect(Collectors.toList());

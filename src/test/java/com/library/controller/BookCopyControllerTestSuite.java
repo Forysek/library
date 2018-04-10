@@ -8,6 +8,8 @@ import com.library.mapper.BookCopyMapper;
 import com.library.service.ServiceBookCopy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,9 +25,15 @@ import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,8 +51,8 @@ public class BookCopyControllerTestSuite {
     @MockBean
     private ServiceBookCopy service;
 
-    @MockBean
-    private BookCopyMapper mapper;
+    @Captor
+    private ArgumentCaptor<BookCopy> bookCopyArgumentCaptor;
 
     @Test
     public void shouldCreateBookCopy() throws Exception {
@@ -59,50 +67,26 @@ public class BookCopyControllerTestSuite {
         String jsonContent = gson.toJson(bookCopyDto);
 
         //When & Then
-        mockMvc.perform(post("/v1/library/books/bookCopy")
+        mockMvc.perform(post("/v1/library/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(jsonContent))
                 .andExpect(status().isOk());
-    }
 
-    @Test
-    public void shouldUpdateStatus() throws Exception {
-        //Given
-        BookCopyDto bookCopyDto = new BookCopyDto(
-                1L,
-                "Available",
-                null,
-                null
-        );
-        BookCopy bookCopy = new BookCopy(
-                1L,
-                "Available",
-                null,
-                null
-        );
-        when(service.getBookCopyById(anyLong())).thenReturn(ofNullable(bookCopy));
-        when(mapper.mapToDto(any(BookCopy.class))).thenReturn(bookCopyDto);
-
-
-        //When & Then
-        mockMvc.perform(put("/v1/library/books/statusChange")
-                .characterEncoding("UTF-8")
-                .param("id", "1")
-                .param("status", "Not Available"))
-                .andExpect(status().isOk());
-
-        assertTrue(bookCopyDto.getStatus().equals("Not Available"));
+        verify(service, times(1)).saveBookCopy(bookCopyArgumentCaptor.capture());
+        BookCopy capturedValue = bookCopyArgumentCaptor.getValue();
+        assertThat(capturedValue.getId(), is(1L));
+        assertThat(capturedValue.getStatus(), is("Available"));
     }
 
     @Test
     public void shouldFetchEmptyBookCopiesList() throws Exception {
         //Given
-        List<BookCopyDto> emptyList = new ArrayList<>();
-        when(mapper.mapToBooksCopiesDtoList(service.getBooksCopiesList())).thenReturn(emptyList);
+        List<BookCopy> emptyList = new ArrayList<>();
+        when(service.getBooksCopiesList()).thenReturn(emptyList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/books/getBooksCopies")
+        mockMvc.perform(get("/v1/library/books")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -111,24 +95,24 @@ public class BookCopyControllerTestSuite {
     @Test
     public void shouldFetchBookCopiesList() throws Exception {
         //Given
-        List<BookCopyDto> bookCopyDtoList = new ArrayList<>();
-        bookCopyDtoList.add(new BookCopyDto(
+        List<BookCopy> bookCopyList = new ArrayList<>();
+        bookCopyList.add(new BookCopy(
                 1L,
                 "Available",
                 null,
                 null
         ));
-        when(mapper.mapToBooksCopiesDtoList(service.getBooksCopiesList())).thenReturn(bookCopyDtoList);
+        when(service.getBooksCopiesList()).thenReturn(bookCopyList);
 
         //When & Then
-        mockMvc.perform(get("/v1/library/books/getBooksCopies")
+        mockMvc.perform(get("/v1/library/books")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].status", is("Available")))
-                .andExpect(jsonPath("$[0].title", isEmptyOrNullString()))
-                .andExpect(jsonPath("$[0].reader", isEmptyOrNullString()));
+                .andExpect(jsonPath("$[0].title", is(nullValue())))
+                .andExpect(jsonPath("$[0].reader", is(nullValue())));
     }
 
     @Test
@@ -149,52 +133,25 @@ public class BookCopyControllerTestSuite {
                 reader
         );
 
-        when(mapper.mapToBookCopy(any(BookCopyDto.class))).thenReturn(bookCopy);
         Gson gson = new Gson();
-        String jsonContent = gson.toJson(bookCopy);
+        BookCopyDto bookCopyDto =  BookCopyMapper.mapToDto(bookCopy);
+        String jsonContent = gson.toJson(bookCopyDto);
 
-        mockMvc.perform(put("/v1/library/books/rentBook")
+        mockMvc.perform(put("/v1/library/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonContent)
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.status", is("Not Available")))
-                .andExpect(jsonPath("$.title", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.reader.id", is(2)))
-                .andExpect(jsonPath("$.reader.firstName", is("Antonio")))
-                .andExpect(jsonPath("$.reader.lastName", is("Banderas")))
-                .andExpect(jsonPath("$.reader.creationDate", is("01/01/2018")))
-                .andExpect(jsonPath("$.reader.booksCopies", hasSize(1)))
-                .andExpect(jsonPath("$.reader.booksCopies[0].id", is(1)));
-    }
+                .andExpect(status().isOk());
 
-    @Test
-    public void shouldReturnBook() throws Exception {
-        //Given
-        BookCopy bookCopy = new BookCopy(
-                1L,
-                "Available",
-                null,
-                null
-        );
-        BookCopyDto bookCopyDto = new BookCopyDto(
-                1L,
-                "Available",
-                null,
-                null
-        );
-        when(mapper.mapToBookCopy(bookCopyDto)).thenReturn(bookCopy);
-        Gson gson = new Gson();
-        String jsonContent = gson.toJson(bookCopyDto);
-
-        mockMvc.perform(put("/v1/library/books/returnBook")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(jsonContent))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.status", is("Available")))
-                .andExpect(jsonPath("$.title", isEmptyOrNullString()));
+        verify(service, times(1)).moveBookCopy(bookCopyArgumentCaptor.capture());
+        BookCopy capturedValue = bookCopyArgumentCaptor.getValue();
+        assertThat(capturedValue.getId(), is(1L));
+        assertThat(capturedValue.getStatus(), is("Not Available"));
+        assertThat(capturedValue.getTitle(), is(nullValue()));
+        assertThat(capturedValue.getReader().getId(), is(2L));
+        assertThat(capturedValue.getReader().getFirstName(), is("Antonio"));
+        assertThat(capturedValue.getReader().getLastName(), is("Banderas"));
+        assertThat(capturedValue.getReader().getCreationDate(), is("01/01/2018"));
+        assertThat(capturedValue.getReader().getBooksCopies(), hasSize(0));
     }
 }
