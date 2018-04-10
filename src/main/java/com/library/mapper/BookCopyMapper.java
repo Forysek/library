@@ -2,7 +2,6 @@ package com.library.mapper;
 
 import com.library.domain.BookCopy;
 import com.library.domain.dto.BookCopyDto;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
